@@ -131,6 +131,9 @@ def data_activities_reply(activity_uuid):
         return model['data'], 200
     return
 
+@app.route('/health', methods=['GET'])
+def health():
+    return "Healthy: OK"
 
 if __name__ == "__main__":
     app.run(debug=True)

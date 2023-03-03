@@ -7,6 +7,12 @@ services:
     build: ./backend-flask
     ports:
       - "4567:4567"
+    healthcheck:
+      test: curl http://localhost:4567/health
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
     volumes:
       - ./backend-flask:/backend-flask
 
@@ -16,6 +22,12 @@ services:
     build: ./frontend-react-js
     ports:
       - "3000:3000"
+    healthcheck:
+      test: curl http://localhost:3000
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
     volumes:
       - ./frontend-react-js:/frontend-react-js
       - /frontend-react-js/node_modules
@@ -24,11 +36,18 @@ services:
     image: postgres:13-alpine
     restart: always
     environment:
+      - PGUSER=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
     ports:
       - '5432:5432'
-    volumes: 
+    healthcheck:
+      test: pg_isready
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+    volumes:
       - db:/var/lib/postgresql/data
 
   dynamodb-local:
@@ -44,7 +63,7 @@ services:
       - ./docker/dynamodb:/home/dynamodblocal/data
     working_dir: /home/dynamodblocal
 
-networks: 
+networks:
   default:
     name: cruddur
 
