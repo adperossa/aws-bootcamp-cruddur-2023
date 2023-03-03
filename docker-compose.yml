@@ -1,10 +1,9 @@
 version: "3.8"
 services:
   backend-flask:
-    environment:
-      FRONTEND_URL: "*"
-      BACKEND_URL: "*"
     build: ./backend-flask
+    env_file:
+    - ./.env
     ports:
       - "4567:4567"
     healthcheck:
@@ -17,9 +16,9 @@ services:
       - ./backend-flask:/backend-flask
 
   frontend-react-js:
-    environment:
-      REACT_APP_BACKEND_URL: "http://localhost:4567"
     build: ./frontend-react-js
+    env_file:
+      - ./.env
     ports:
       - "3000:3000"
     healthcheck:
@@ -35,10 +34,8 @@ services:
   db:
     image: postgres:13-alpine
     restart: always
-    environment:
-      - PGUSER=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
+    env_file:
+      - ./.env
     ports:
       - '5432:5432'
     healthcheck:
