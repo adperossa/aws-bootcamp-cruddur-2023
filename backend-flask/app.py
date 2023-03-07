@@ -2,7 +2,6 @@ from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
 import os
-
 # honeycomb telemetry
 from opentelemetry import trace
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
@@ -10,11 +9,13 @@ from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-
-
 # aws xray telemetry
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+# cloudwatch logs
+import watchtower
+import logging
+from time import strftime
 
 # services
 from services.home_activities import *
@@ -43,6 +44,14 @@ RequestsInstrumentor().instrument()
 xray_url = os.getenv("AWS_XRAY_URL")
 xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
 XRayMiddleware(app, xray_recorder)
+
+# Configuring Logger to Use CloudWatch
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
+console_handler = logging.StreamHandler()
+cw_handler = watchtower.CloudWatchLogHandler(log_group='cruddur')
+LOGGER.addHandler(console_handler)
+LOGGER.addHandler(cw_handler)
 
 # cors
 frontend = os.getenv('FRONTEND_URL')
@@ -166,6 +175,11 @@ def data_activities_reply(activity_uuid):
 def health():
     return "Healthy: OK"
 
+@app.after_request
+def after_request(response):
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
+    LOGGER.error('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)
