@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 from flask_cors import CORS, cross_origin
+from flask import got_request_exception
 import os
 # honeycomb telemetry
 from opentelemetry import trace
@@ -16,6 +17,9 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 import watchtower
 import logging
 from time import strftime
+# rollbar error logging
+import rollbar
+import rollbar.contrib.flask
 
 # services
 from services.home_activities import *
@@ -170,11 +174,32 @@ def data_activities_reply(activity_uuid):
         return model['data'], 200
     return
 
-
 @app.route('/health', methods=['GET'])
 def health():
     return "Healthy: OK"
 
+@app.route('/rollbar/test')
+def rollbar_test():
+    rollbar.report_message('Hello World!', 'warning')
+    return "Hello World!"
+
+# rollbar error logging
+with app.app_context():
+    rollbar_token = os.getenv("ROLLBAR_ACCESS_TOKEN")
+    rollbar.init(
+        # access token
+        rollbar_token,
+        # environment name
+        'development',
+        # server root directory, makes tracebacks prettier
+        root=os.path.dirname(os.path.realpath(__file__)),
+        # flask already sets up logging
+        allow_logging_basic_config=False)
+    
+    # send exceptions from `app` to rollbar, using flask's signal system.
+    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
+
+# logging
 @app.after_request
 def after_request(response):
     timestamp = strftime('[%Y-%b-%d %H:%M]')
