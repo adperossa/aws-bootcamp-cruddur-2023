@@ -5,11 +5,8 @@ services:
     env_file:
     - ./.env
     environment:
-      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
-      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
-      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
-      AWS_XRAY_URL: "*localhost*"
-      AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
+      # AWS_XRAY_URL: "*localhost*"
+      # AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
       OTEL_SERVICE_NAME: "backend-flask"
       OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io/"
       OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
@@ -28,6 +25,11 @@ services:
     build: ./frontend-react-js
     env_file:
       - ./.env
+    environment:
+      REACT_APP_AWS_PROJECT_REGION: "${AWS_DEFAULT_REGION}"
+      REACT_APP_AWS_COGNITO_REGION: "${AWS_DEFAULT_REGION}"
+      REACT_APP_AWS_USER_POOL_ID: "us-east-1_TGVMZjtdt"
+      REACT_APP_CLIENT_ID: "34n3ej8pekvdjc2cgc6nprffvm"
     ports:
       - "3000:3000"
     healthcheck:
@@ -42,7 +44,6 @@ services:
 
   db:
     image: postgres:13-alpine
-    restart: always
     env_file:
       - ./.env
     ports:
@@ -69,16 +70,16 @@ services:
       - ./docker/dynamodb:/home/dynamodblocal/data
     working_dir: /home/dynamodblocal
 
-  xray-daemon:
-    image: "amazon/aws-xray-daemon"
-    environment:
-      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
-      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
-      AWS_REGION: "us-east-1"
-    command:
-      - "xray -o -b xray-daemon:2000"
-    ports:
-      - 2000:2000/udp
+  # xray-daemon:
+  #   image: "amazon/aws-xray-daemon"
+  #   environment:
+  #     AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+  #     AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+  #     AWS_REGION: "us-east-1"
+  #   command:
+  #     - "xray -o -b xray-daemon:2000"
+  #   ports:
+  #     - 2000:2000/udp
 
 networks:
   default:
