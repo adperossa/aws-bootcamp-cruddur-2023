@@ -4,27 +4,10 @@ import { ReactComponent as Logo } from "../components/svg/logo.svg";
 import { Link } from "react-router-dom";
 import { Auth } from "aws-amplify";
 
-// [TODO] Authenication
-//import Cookies from 'js-cookie'
-
 export default function SigninPage() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  //const [errors, setErrors] = React.useState('');
   const [cognitoErrors, setCognitoErrors] = React.useState("");
-
-  // const onsubmit = async (event) => {
-  //   event.preventDefault();
-  //   setErrors('')
-  //   console.log('onsubmit')
-  //   if (Cookies.get('user.email') === email && Cookies.get('user.password') === password){
-  //     Cookies.set('user.logged_in', true)
-  //     window.location.href = "/"
-  //   } else {
-  //     setErrors("Email and password is incorrect or account doesn't exist")
-  //   }
-  //   return false
-  // }
 
   const onsubmit = async (event) => {
     setCognitoErrors("");
@@ -56,11 +39,6 @@ export default function SigninPage() {
   const password_onchange = (event) => {
     setPassword(event.target.value);
   };
-
-  // let el_errors;
-  // if (errors){
-  //   el_errors = <div className='errors'>{errors}</div>;
-  // }
 
   let errors;
   if (cognitoErrors) {

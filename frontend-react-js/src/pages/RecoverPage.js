@@ -5,30 +5,17 @@ import { Link } from "react-router-dom";
 import { Auth } from 'aws-amplify';
 
 export default function RecoverPage() {
-  // Username is Email
-  const [username, setUsername] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [passwordAgain, setPasswordAgain] = React.useState('');
   const [code, setCode] = React.useState('');
-  //const [errors, setErrors] = React.useState('');
   const [cognitoErrors, setCognitoErrors] = React.useState('');
   const [formState, setFormState] = React.useState('send_code');
-
-  // const onsubmit_send_code = async (event) => {
-  //   event.preventDefault();
-  //   console.log('onsubmit_send_code')
-  //   return false
-  // }
-  // const onsubmit_confirm_code = async (event) => {
-  //   event.preventDefault();
-  //   console.log('onsubmit_confirm_code')
-  //   return false
-  // }
 
   const onsubmit_send_code = async (event) => {
     event.preventDefault();
     setCognitoErrors('')
-    Auth.forgotPassword(username)
+    Auth.forgotPassword(email)
     .then((data) => setFormState('confirm_code') )
     .catch((err) => setCognitoErrors(err.message) );
     return false
@@ -38,7 +25,7 @@ export default function RecoverPage() {
     event.preventDefault();
     setCognitoErrors('')
     if (password == passwordAgain){
-      Auth.forgotPasswordSubmit(username, code, password)
+      Auth.forgotPasswordSubmit(email, code, password)
       .then((data) => setFormState('success'))
       .catch((err) => setCognitoErrors(err.message) );
     } else {
@@ -47,8 +34,8 @@ export default function RecoverPage() {
     return false
   }
 
-  const username_onchange = (event) => {
-    setUsername(event.target.value);
+  const email_onchange = (event) => {
+    setEmail(event.target.value);
   }
   const password_onchange = (event) => {
     setPassword(event.target.value);
@@ -72,12 +59,12 @@ export default function RecoverPage() {
     >
       <h2>Recover your Password</h2>
       <div className='fields'>
-        <div className='field text_field username'>
+        <div className='field text_field email'>
           <label>Email</label>
           <input
             type="text"
-            value={username}
-            onChange={username_onchange} 
+            value={email}
+            onChange={email_onchange} 
           />
         </div>
       </div>

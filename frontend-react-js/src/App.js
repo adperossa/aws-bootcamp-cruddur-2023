@@ -1,7 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import process from "process";
-import { Amplify } from 'aws-amplify';
+import { Amplify } from "aws-amplify";
 import "./App.css";
 
 import HomeFeedPage from "./pages/HomeFeedPage";
@@ -16,18 +16,18 @@ import ConfirmationPage from "./pages/ConfirmationPage";
 
 // AWS Amplify
 Amplify.configure({
-  "AWS_PROJECT_REGION": process.env.REACT_APP_AWS_PROJECT_REGION,
-  "aws_cognito_region": process.env.REACT_APP_AWS_COGNITO_REGION,
-  "aws_user_pools_id": process.env.REACT_APP_AWS_USER_POOL_ID,
-  "aws_user_pools_web_client_id": process.env.REACT_APP_CLIENT_ID,
-  "oauth": {},
+  AWS_PROJECT_REGION: process.env.REACT_APP_AWS_PROJECT_REGION,
+  aws_cognito_region: process.env.REACT_APP_AWS_COGNITO_REGION,
+  aws_user_pools_id: process.env.REACT_APP_AWS_USER_POOL_ID,
+  aws_user_pools_web_client_id: process.env.REACT_APP_CLIENT_ID,
+  oauth: {},
   Auth: {
     // We are not using an Identity Pool
     // identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID, // REQUIRED - Amazon Cognito Identity Pool ID
-    region: process.env.REACT_APP_AWS_PROJECT_REGION,           // REQUIRED - Amazon Cognito Region
-    userPoolId: process.env.REACT_APP_AWS_USER_POOL_ID,         // OPTIONAL - Amazon Cognito User Pool ID
-    userPoolWebClientId: process.env.REACT_APP_CLIENT_ID,   // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
-  }
+    region: process.env.REACT_APP_AWS_PROJECT_REGION, // REQUIRED - Amazon Cognito Region
+    userPoolId: process.env.REACT_APP_AWS_USER_POOL_ID, // OPTIONAL - Amazon Cognito User Pool ID
+    userPoolWebClientId: process.env.REACT_APP_CLIENT_ID, // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+  },
 });
 
 const router = createBrowserRouter([
@@ -70,11 +70,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    <>
-      <RouterProvider router={router} />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
