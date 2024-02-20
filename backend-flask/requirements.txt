@@ -11,3 +11,4 @@ aws-xray-sdk
 watchtower
 blinker
 rollbar
+python-jose

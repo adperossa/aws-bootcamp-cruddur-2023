@@ -33,6 +33,9 @@ from services.messages import *
 from services.create_message import *
 from services.show_activity import *
 
+# Helper libs
+from lib.cognito_jwt_validator import cognito_auth_required
+
 app = Flask(__name__)
 
 # Initialize Honeycomb
@@ -64,8 +67,8 @@ origins = [frontend, backend]
 cors = CORS(
     app,
     resources={r"/api/*": {"origins": origins}},
-    expose_headers="location,link",
-    allow_headers="content-type,if-modified-since",
+    headers=['Content-Type', 'Authorization'],
+    expose_headers='Authorization',
     methods="OPTIONS,GET,HEAD,POST"
 )
 
@@ -107,10 +110,10 @@ def data_create_message():
         return model['errors'], 422
     else:
         return model['data'], 200
-    return
 
 
 @app.route("/api/activities/home", methods=['GET'])
+@cognito_auth_required
 def data_home():
     data = HomeActivities.run()
     return data, 200
@@ -153,7 +156,6 @@ def data_activities():
         return model['errors'], 422
     else:
         return model['data'], 200
-    return
 
 
 @app.route("/api/activities/<string:activity_uuid>", methods=['GET'])
@@ -200,11 +202,11 @@ with app.app_context():
     got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 
 # logging
-@app.after_request
-def after_request(response):
-    timestamp = strftime('[%Y-%b-%d %H:%M]')
-    LOGGER.error('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
-    return response
+# @app.after_request
+# def after_request(response):
+#     timestamp = strftime('[%Y-%b-%d %H:%M]')
+#     LOGGER.info('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+#     return response
 
 if __name__ == "__main__":
     app.run(debug=True)
