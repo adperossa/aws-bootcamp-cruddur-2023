@@ -1,5 +1,5 @@
 section.message_groups {
-  background: #000;
+  background: var(--fg);
   border-right: solid 1px rgb(58,63,78);
   padding: 0px;
 }

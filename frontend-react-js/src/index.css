@@ -1,8 +1,13 @@
+:root {
+  --bg: rgb(61,13,123);
+  --fg: rgb(8,1,14);
+}
+
 * { box-sizing: border-box; }
 html,body { 
   height: 100%; 
   width: 100%; 
-  background: rgb(14,3,28);
+  background: var(--bg);
 }
 
 body {
