@@ -1,4 +1,13 @@
 {
   "python.analysis.typeCheckingMode": "off",
-  "python.analysis.autoImportCompletions": false
+  "python.analysis.autoImportCompletions": false,
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "driver": "PostgreSQL",
+      "name": "local docker cruddur",
+      "connectString": "postgresql://postgres:password@127.0.0.1:5432/cruddur"
+    }
+  ]
 }
