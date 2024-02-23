@@ -7,6 +7,7 @@ services:
     environment:
       # AWS_XRAY_URL: "*localhost*"
       # AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
+      FLASK_DEBUG: 1
       OTEL_SERVICE_NAME: "backend-flask"
       OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io/"
       OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"

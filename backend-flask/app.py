@@ -54,7 +54,7 @@ RequestsInstrumentor().instrument()
 
 # Configuring Logger to Use CloudWatch
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.DEBUG)
+LOGGER.setLevel(logging.INFO)
 console_handler = logging.StreamHandler()
 cw_handler = watchtower.CloudWatchLogHandler(log_group='cruddur')
 LOGGER.addHandler(console_handler)
@@ -201,12 +201,5 @@ with app.app_context():
     # send exceptions from `app` to rollbar, using flask's signal system.
     got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 
-# logging
-# @app.after_request
-# def after_request(response):
-#     timestamp = strftime('[%Y-%b-%d %H:%M]')
-#     LOGGER.info('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
-#     return response
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

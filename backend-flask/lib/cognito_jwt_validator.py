@@ -90,20 +90,17 @@ def cognito_auth_required(f):
                 token = request.headers["Authorization"].split(" ")[1]
 
             if not token:
-                # return jsonify({"message": "Token is missing"}), 403
-                return redirect(url_for('signin'))
+                return jsonify({"message": "Token is missing"}), 403
 
             if not _is_valid_cognito_token(token):
-                # return jsonify({"message": "Token is invalid"}), 403
-                return redirect(url_for('signin'))
+                return jsonify({"message": "Token is invalid"}), 403
 
         except Exception as e:
             LOGGER.error(str(e))
-            return redirect(url_for('signin'))
-            # return (
-            #     jsonify({"message": "An error occurred while validating the token"}),
-            #     500,
-            # )
+            return (
+                jsonify({"message": "An error occurred while validating the token"}),
+                500,
+            )
 
         return f(*args, **kwargs)
 
