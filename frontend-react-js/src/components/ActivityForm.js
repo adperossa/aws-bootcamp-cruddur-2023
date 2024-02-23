@@ -3,6 +3,8 @@ import React from "react";
 import process from 'process';
 import {ReactComponent as BombIcon} from './svg/bomb.svg';
 
+import { Auth } from "aws-amplify";
+
 export default function ActivityForm(props) {
   const [count, setCount] = React.useState(0);
   const [message, setMessage] = React.useState('');
@@ -17,13 +19,17 @@ export default function ActivityForm(props) {
   const onsubmit = async (event) => {
     event.preventDefault();
     try {
+      const session = await Auth.currentSession();
+      const token = session.getIdToken().getJwtToken();
+
       const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/activities`
       console.log('onsubmit payload', message)
       const res = await fetch(backend_url, {
         method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           message: message,

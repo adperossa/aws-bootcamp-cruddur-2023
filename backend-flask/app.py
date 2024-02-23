@@ -114,7 +114,7 @@ def data_create_message():
 
 @app.route("/api/activities/home", methods=['GET'])
 @cognito_auth_required
-def data_home():
+def data_home(claims):
     data = HomeActivities.run()
     return data, 200
 
@@ -147,8 +147,9 @@ def data_search():
 
 @app.route("/api/activities", methods=['POST', 'OPTIONS'])
 @cross_origin()
-def data_activities():
-    user_handle = 'andrewbrown'
+@cognito_auth_required
+def data_activities(claims):
+    user_handle = claims['preferred_username']
     message = request.json['message']
     ttl = request.json['ttl']
     model = CreateActivity.run(message, user_handle, ttl)

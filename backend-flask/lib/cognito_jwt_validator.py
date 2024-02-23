@@ -59,7 +59,7 @@ def _is_valid_cognito_token(token):
         # verify the signature
         if not public_key.verify(message.encode("utf8"), decoded_signature):
             print("Signature verification failed")
-            return False
+            return None
         print("Signature successfully verified")
         # since we passed the verification, we can now safely
         # use the unverified claims
@@ -67,17 +67,16 @@ def _is_valid_cognito_token(token):
         # additionally we can verify the token expiration
         if time.time() > claims["exp"]:
             print("Token is expired")
-            return False
+            return None
         # and the Audience  (use claims['client_id'] if verifying an access token)
         if claims["aud"] != app_client_id:
             print("Token was not issued for this audience")
-            return False
+            return None
         # now we can use the claims
-        # print(claims)
-        return True
+        return claims
     except (JWTError, JWSError) as e:
         print(f"Error decoding token: {e}")
-        return False
+        return None
 
 
 def cognito_auth_required(f):
@@ -91,9 +90,11 @@ def cognito_auth_required(f):
 
             if not token:
                 return jsonify({"message": "Token is missing"}), 403
-
-            if not _is_valid_cognito_token(token):
+            
+            claims = _is_valid_cognito_token(token)
+            if not claims:
                 return jsonify({"message": "Token is invalid"}), 403
+            kwargs["claims"] = claims
 
         except Exception as e:
             LOGGER.error(str(e))
