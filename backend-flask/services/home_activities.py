@@ -11,7 +11,7 @@ tracer = trace.get_tracer("service-home")
 class HomeActivities:
     @staticmethod
     def run():
-        with tracer.start_as_current_span("get-mock-homedata") as span:
+        with tracer.start_as_current_span("get-homedata") as span:
             sql = db.template("activities", "home")
             results = db.query_array_json(sql)
 

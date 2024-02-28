@@ -7,7 +7,8 @@ CREATE TABLE public.users (
   handle text,
   email text,
   cognito_user_id text,
-  created_at TIMESTAMP default current_timestamp NOT NULL
+  created_at TIMESTAMP default current_timestamp NOT NULL,
+  updated_at TIMESTAMP default current_timestamp NOT NULL
 );
 
 DROP TABLE IF EXISTS public.activities;
@@ -20,7 +21,8 @@ CREATE TABLE public.activities (
   likes_count integer DEFAULT 0,
   reply_to_activity_uuid integer,
   expires_at TIMESTAMP,
-  created_at TIMESTAMP default current_timestamp NOT NULL
+  created_at TIMESTAMP default current_timestamp NOT NULL,
+  updated_at TIMESTAMP default current_timestamp NOT NULL
 );
 
 DROP FUNCTION IF EXISTS func_updated_at();
